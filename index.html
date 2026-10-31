@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="TWC Disposals">
+<meta name="theme-color" content="#1b2127">
+<title>TWC Disposals</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%231b2127%22/%3E%3Cpath d=%22M22 22h20l-2 28H24z%22 fill=%22none%22 stroke=%22%23f0913a%22 stroke-width=%225%22 stroke-linejoin=%22round%22/%3E%3Cpath d=%22M18 21h28M27 21v-5h10v5%22 stroke=%22%23f0913a%22 stroke-width=%225%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E">
+<script>window.DISP_API="__API_URL__";</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#f3f4f2; --surface:#ffffff; --sunk:#e8eae6; --line:#d5d8d2; --ink:#1b2127; --muted:#5d666e;
+  --accent:#b85c00; --accent-ink:#ffffff; --accent-soft:#f6e6d3;
+  --tag:#dde1e3; --tag-ink:#20262c;
+  --ok:#2f7a4b; --ok-soft:#dcefe2; --warn:#9a6a00; --warn-soft:#f6ecc9; --bad:#b0362f; --bad-soft:#f6dcda; --info:#2f5f9e; --info-soft:#dde7f5; --idle:#56606a; --idle-soft:#e3e6e8;
+  --f-display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r:6px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14181b; --surface:#1c2125; --sunk:#111417; --line:#2f363c; --ink:#e7eaec; --muted:#9aa4ab;
+  --accent:#f0913a; --accent-ink:#1a1206; --accent-soft:#3a2a18; --tag:#2c3339; --tag-ink:#e3e7ea;
+  --ok:#6cc68e; --ok-soft:#1d3226; --warn:#e3b649; --warn-soft:#3a3118; --bad:#ef7d74; --bad-soft:#3d2220; --info:#8fb6ee; --info-soft:#1f2b3d; --idle:#aab3ba; --idle-soft:#2a3035;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14181b; --surface:#1c2125; --sunk:#111417; --line:#2f363c; --ink:#e7eaec; --muted:#9aa4ab;
+  --accent:#f0913a; --accent-ink:#1a1206; --accent-soft:#3a2a18; --tag:#2c3339; --tag-ink:#e3e7ea;
+  --ok:#6cc68e; --ok-soft:#1d3226; --warn:#e3b649; --warn-soft:#3a3118; --bad:#ef7d74; --bad-soft:#3d2220; --info:#8fb6ee; --info-soft:#1f2b3d; --idle:#aab3ba; --idle-soft:#2a3035;
+  color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--f-body)}
+button,input,select,textarea{font:inherit;color:inherit}
+.mono{font-family:var(--f-mono)}.num{font-variant-numeric:tabular-nums}.muted{color:var(--muted)}
+h1,h2,h3{font-family:var(--f-display);font-stretch:85%;margin:0;line-height:1.1}
+.eyebrow{font-family:var(--f-display);font-stretch:85%;font-weight:700;font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:20;background:#1b2127;color:#f3f4f2;padding:calc(env(safe-area-inset-top,0px) + 10px) 20px 10px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.top h1{font-size:24px;font-weight:800;letter-spacing:.01em;text-transform:uppercase;white-space:nowrap}
+.top h1 small{font-family:var(--f-mono);font-size:11px;font-weight:500;letter-spacing:0;text-transform:none;color:#9aa4ab;margin-left:8px}
+.top .search{flex:1;min-width:180px;display:flex}
+.top input{width:100%;border:0;border-radius:var(--r);padding:9px 12px;background:#fff;color:#1b2127;font-family:var(--f-mono);font-size:14px}
+.top .btn{border-color:transparent}
+.tabs{display:flex;gap:4px;padding:0 20px;background:#1b2127}
+.tabs button{all:unset;cursor:pointer;color:#aab3ba;padding:8px 14px 10px;font-weight:600;font-size:14px;border-bottom:3px solid transparent}
+.tabs button[aria-selected="true"]{color:#fff;border-color:#f0913a}
+.tabs button:focus-visible{outline:2px solid #f0913a;outline-offset:-2px}
+
+main{padding:18px 20px 80px;max-width:1400px;margin:0 auto;display:grid;gap:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:var(--r);padding:8px 13px;cursor:pointer;font-weight:500;white-space:nowrap;text-decoration:none}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.btn.ghost{background:transparent;border-color:transparent}
+.btn.danger{color:var(--bad)}
+.btn.sm{padding:5px 10px;font-size:13.5px}
+.btn:disabled{opacity:.5;cursor:default}
+.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+
+.pagehead{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:space-between}
+.pagehead h2{font-size:28px;font-weight:700}
+.sub{color:var(--muted);font-size:14px;margin-top:4px}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 11px;font-size:13.5px;font-weight:500;white-space:nowrap;border:1px solid var(--line);background:var(--surface);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip .n{font-family:var(--f-mono);font-size:12px;opacity:.8}
+.pill{display:inline-flex;align-items:center;gap:6px;background:var(--cs);color:var(--c);border-radius:999px;padding:2px 9px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--c);display:inline-block;flex:none}
+.chip .dot{background:var(--c)}
+.st-pending{--c:var(--warn);--cs:var(--warn-soft)}
+.st-approved{--c:var(--info);--cs:var(--info-soft)}
+.st-scheduled{--c:var(--accent);--cs:var(--accent-soft)}
+.st-completed{--c:var(--ok);--cs:var(--ok-soft)}
+.st-cancelled{--c:var(--muted);--cs:var(--sunk)}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:8px}
+.toolbar select,.toolbar input{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:7px 10px;min-width:0}
+.toolbar input{flex:1;min-width:160px}
+
+.ledger-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+table.ledger{width:100%;border-collapse:collapse;min-width:900px}
+.ledger th{text-align:left;font-family:var(--f-display);font-stretch:85%;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--surface);position:sticky;top:0}
+.ledger td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.ledger tbody tr{cursor:pointer}
+.ledger tbody tr:hover td{background:var(--bg)}
+.ledger tbody tr:last-child td{border-bottom:0}
+.ledger .r{text-align:right}
+.ledger .small{font-size:12.5px;color:var(--muted)}
+.ledger .dates{white-space:nowrap;font-size:13.5px}
+.thumb{width:48px;height:48px;border-radius:4px;object-fit:cover;background:var(--sunk);display:block}
+.thumbs{display:flex;gap:4px}
+.thumbs .more{font-family:var(--f-mono);font-size:12px;color:var(--muted);align-self:center}
+.noph{width:48px;height:48px;border-radius:4px;background:var(--sunk);display:grid;place-items:center;color:var(--muted);font-size:11px}
+
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:var(--r);padding:32px 24px;display:grid;gap:12px;justify-items:start}
+.empty p{margin:0;color:var(--muted);max-width:60ch}
+
+/* cards for phones */
+@media (max-width:760px){
+  .top{padding-left:14px;padding-right:14px}.tabs{padding:0 10px}
+  main{padding:14px 14px 80px}
+  .top h1{font-size:20px}.top h1 small{display:none}
+  .top .search{order:3;flex-basis:100%}
+  .ledger-wrap{background:transparent;border:0;overflow:visible}
+  table.ledger,table.ledger tbody,table.ledger tr,table.ledger td{display:block;min-width:0;width:auto}
+  table.ledger thead{display:none}
+  table.ledger tbody tr{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);margin-bottom:10px;padding:12px 12px 10px;display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:2px 10px}
+  .ledger td{border:0;padding:0}
+  .ledger td.c-ph{grid-row:1/span 4}
+  .ledger td.c-what{grid-column:2}
+  .ledger td.c-st{grid-column:3;grid-row:1}
+  .ledger td.c-where,.ledger td.c-how,.ledger td.c-dates{grid-column:2/4;font-size:13.5px}
+  .ledger td.c-req,.ledger td.c-cost{display:none}
+  .ledger .thumbs img:not(:first-child),.ledger .thumbs .more{display:none}
+}
+
+/* summary */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:grid;gap:2px;align-content:start;text-align:left;cursor:pointer}
+.kpi:hover{border-color:var(--muted)}
+.kpi .k{font-family:var(--f-display);font-stretch:85%;font-weight:700;font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.kpi .v{font-family:var(--f-display);font-stretch:85%;font-weight:700;font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi .s{color:var(--muted);font-size:13px}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:14px;align-items:start}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;min-width:0}
+.panel .ph{padding:12px 14px 8px;display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.panel h3{font-size:18px}
+table.sum{width:100%;border-collapse:collapse}
+.sum th,.sum td{padding:8px 14px;border-top:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sum th{font-family:var(--f-display);font-stretch:85%;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.sum td:first-child,.sum th:first-child{text-align:left;white-space:normal}
+.sum tr.tot td{font-weight:600;border-top:2px solid var(--line)}
+.sum tbody tr[data-f]{cursor:pointer}.sum tbody tr[data-f]:hover td{background:var(--bg)}
+.bar{height:6px;border-radius:99px;background:var(--sunk);overflow:hidden;margin-top:5px;max-width:220px}
+.bar i{display:block;height:100%;background:var(--accent)}
+
+/* modal */
+#overlay:empty{display:none}
+#overlay{position:fixed;inset:0;z-index:50;background:rgb(10 12 14 / .55);display:grid;place-items:start center;overflow-y:auto;padding:24px 12px}
+.modal{background:var(--surface);border-radius:10px;width:min(820px,100%);padding:20px;display:grid;gap:14px;box-shadow:0 18px 60px rgb(0 0 0 / .35)}
+.modal h3{font-size:24px}
+.mhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px}
+.field{display:grid;gap:4px;min-width:0}
+.field.full{grid-column:1/-1}
+.field label,.flabel{font-size:13px;font-weight:600;color:var(--muted)}
+.field input,.field select,.field textarea{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:8px 10px;width:100%;min-width:0}
+.field textarea{min-height:64px;resize:vertical}
+.hint{font-weight:400;color:var(--muted);font-size:12.5px}
+.req{color:var(--bad)}
+.items{display:grid;gap:10px}
+.itemrow{border:1px solid var(--line);border-radius:var(--r);padding:12px;display:grid;gap:10px;background:var(--bg)}
+.itemrow .irow{display:grid;grid-template-columns:minmax(120px,1fr) minmax(140px,2fr) 90px auto;gap:10px;align-items:end}
+@media (max-width:600px){.itemrow .irow{grid-template-columns:1fr 90px}.itemrow .irow .field:nth-child(2){grid-column:1/-1;grid-row:2}}
+.phedit{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.phedit figure{margin:0;position:relative}
+.phedit img{width:72px;height:72px;object-fit:cover;border-radius:4px;display:block;background:var(--sunk);cursor:zoom-in}
+.phedit figure button{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;border:0;background:var(--ink);color:var(--bg);cursor:pointer;font-size:13px;line-height:1}
+.phedit .up{width:72px;height:72px;border-radius:4px;background:var(--sunk);display:grid;place-items:center;font-size:12px;color:var(--muted)}
+.row-end{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;align-items:center}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px}
+.flow .lbl{font-size:13px;color:var(--muted);margin-right:4px}
+.meta{font-size:12.5px;color:var(--muted)}
+.lightbox{position:fixed;inset:0;z-index:80;background:rgb(0 0 0 / .85);display:grid;place-items:center;padding:20px;cursor:zoom-out}
+.lightbox img{max-width:100%;max-height:100%;border-radius:6px}
+
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:var(--r);z-index:90;max-width:calc(100% - 32px);font-size:14px;box-shadow:0 6px 24px rgb(0 0 0 / .25)}
+.toast[hidden]{display:none}
+.fab{display:none}
+@media (max-width:760px){.fab{display:inline-flex;position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:30;border-radius:999px;padding:12px 18px;box-shadow:0 6px 20px rgb(0 0 0 / .3)}.hide-sm{display:none}}
+
+#gate{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;padding:20px}
+#gate[hidden]{display:none}
+.gate-card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:24px;max-width:420px;width:100%;display:grid;gap:10px}
+.gate-card h2{font-size:26px}.gate-card p{margin:0;color:var(--muted)}
+.gate-card form{display:flex;gap:8px}.gate-card input{flex:1;border:1px solid var(--line);border-radius:var(--r);padding:9px 11px;background:var(--surface)}
+.gate-err{color:var(--bad)!important}
+
+.upd{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 12px);transform:translateX(-50%);z-index:70;display:flex;align-items:center;gap:12px;background:var(--ink);color:var(--bg);padding:8px 8px 8px 16px;border-radius:var(--r);box-shadow:0 6px 24px rgb(0 0 0 / .25);font-size:14px;max-width:calc(100% - 32px)}
+.upd[hidden]{display:none}.upd span{flex:1}.upd .btn{background:var(--accent);color:var(--accent-ink);border-color:transparent;padding:6px 12px}
+.upd .x{background:transparent;color:inherit;border:0;font-size:20px;line-height:1;padding:2px 6px;cursor:pointer;opacity:.7}
+@media (max-width:560px){.upd{left:12px;right:12px;transform:none;max-width:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Disposals<small id="conn">connecting…</small></h1>
+  <div class="search"><input id="q" type="search" placeholder="Search item, location, reason, vendor, ID" aria-label="Search disposals"></div>
+  <button class="btn primary hide-sm" id="newBtn" type="button">+ New disposal</button>
+</header>
+<nav class="tabs" role="tablist" aria-label="Views">
+  <button role="tab" data-tab="log" aria-selected="true">Log</button>
+  <button role="tab" data-tab="summary" aria-selected="false">Summary</button>
+</nav>
+<main id="view"><div class="empty"><h3>Loading disposals…</h3></div></main>
+<button class="btn primary fab" id="fab" type="button">+ New</button>
+<div id="overlay"></div>
+<div id="toast" class="toast" hidden></div>
+<div id="gate" hidden></div>
+
+<script>
+const API=window.DISP_API;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
+const LS=k=>{try{return localStorage.getItem("twcd_"+k)||""}catch(e){return ""}};
+const LSset=(k,v)=>{try{localStorage.setItem("twcd_"+k,v)}catch(e){}};
+const STATUSES=["Pending approval","Approved","Scheduled","Completed","Cancelled"];
+const stCls=s=>({"Pending approval":"st-pending","Approved":"st-approved","Scheduled":"st-scheduled","Completed":"st-completed","Cancelled":"st-cancelled"})[s]||"st-pending";
+const DEF_LISTS={"Property":["1 KS","89 NR","40 BP","219 Kallang Bahru"],"Item":["Table","Chair","Cabinet","Pedestal","Sofa","Partition","Appliance","IT equipment","Others"],
+  "Method":["Dispose","Recycle","Sell","Donate","Sent to storage","Return to vendor"],"Condition":["Damaged","Worn","Obsolete","Good – surplus"],"Status":STATUSES,"Vendor / Contractor":["SuperHandy"]};
+const S={rows:[],lists:DEF_LISTS,tab:"log",f:{q:"",status:"",prop:"",method:"",month:""},code:LS("code"),name:LS("name"),sheetUrl:"",busy:false};
+const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const fmtD=iso=>{if(!iso) return "";const t=Date.parse(iso+"T00:00:00");return isNaN(t)?esc(iso):new Date(t).toLocaleDateString("en-SG",{day:"numeric",month:"short",year:"numeric"})};
+const fmtShort=iso=>{if(!iso) return "";const t=Date.parse(iso+"T00:00:00");return isNaN(t)?esc(iso):new Date(t).toLocaleDateString("en-SG",{day:"numeric",month:"short"})};
+const money=n=>"SGD "+Number(n||0).toLocaleString("en-SG",{minimumFractionDigits:2,maximumFractionDigits:2});
+const list=k=>{const base=(S.lists&&S.lists[k]&&S.lists[k].length?S.lists[k]:DEF_LISTS[k])||[];
+  const key={"Property":"property","Item":"item","Method":"method","Condition":"condition","Vendor / Contractor":"vendor"}[k];
+  return [...new Set([...base,...(key?S.rows.map(r=>r[key]).filter(Boolean):[])])]};
+let toastT;function toast(m,ms){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,ms||3200)}
+
+/* ---------- server ---------- */
+async function call(fn,...args){
+  let r;
+  for(let t=0;;t++){
+    try{r=await fetch(API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({fn,args}),redirect:"follow"});break}
+    catch(e){if(t>=2) throw new Error("Can't reach the server. Check your internet connection and try again.");await new Promise(z=>setTimeout(z,800*(t+1)))}
+  }
+  if(!r.ok) throw new Error("The server answered with an error ("+r.status+"). Please try again.");
+  let j;try{j=await r.json()}catch(e){throw new Error("The server sent an unexpected answer. Please try again.")}
+  if(!j.ok) throw new Error(j.error||"Server error");
+  return j.result;
+}
+const gate=$("#gate");
+function ask(title,text,ph,btn,err,type){return new Promise(res=>{gate.hidden=false;
+  gate.innerHTML=`<div class="gate-card"><span class="eyebrow">TWC Disposals</span><h2>${title}</h2><p>${text}</p><form id="gf"><input id="gi" placeholder="${ph}" ${type?`type="${type}"`:""} autocomplete="off" required><button class="btn primary" type="submit">${btn}</button></form>${err?`<p class="gate-err">${err}</p>`:""}</div>`;
+  const i=$("#gi");setTimeout(()=>i.focus(),30);$("#gf").onsubmit=e=>{e.preventDefault();const v=i.value.trim();if(v){gate.hidden=true;res(v)}}})}
+async function boot(){
+  for(;;){
+    try{const r=await call("apiBoot",S.code);S.rows=r.rows||[];S.lists=r.lists||DEF_LISTS;S.sheetUrl=r.sheetUrl||"";LSset("code",S.code);break}
+    catch(e){if(/ACCESS_DENIED/.test(e.message)){S.code=await ask("Enter the access code","Ask your team for the code. You only need to enter it once on this device.","Access code","Continue",S.code?"That code isn't right. Please try again.":"","password");continue}
+      $("#view").innerHTML=`<div class="empty"><h3>Couldn't load disposals</h3><p>${esc(e.message)}</p><button class="btn primary" onclick="location.reload()">Try again</button></div>`;$("#conn").textContent="offline";return}
+  }
+  if(!S.name){S.name=await ask("What's your name?","It's saved with the disposals you log or update, so everyone knows who did what.","Your name","Save");LSset("name",S.name)}
+  $("#conn").textContent="shared log";render();
+  setInterval(()=>{if(!document.hidden) refresh()},30000);
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden) refresh()});
+}
+async function refresh(){
+  if(S.busy) return;
+  try{const r=await call("apiList",S.code);S.rows=r.rows||[];S.lists=r.lists||S.lists;if(!$("#overlay").innerHTML) render()}catch(e){}
+}
+async function save(recs,msg){
+  S.busy=true;toast("Saving…",60000);
+  try{const r=await call("apiSave",S.code,recs,S.name);
+    r.rows.forEach(n=>{const i=S.rows.findIndex(x=>x.id===n.id);if(i>=0) S.rows[i]=n;else S.rows.push(n)});
+    toast(msg||"Saved");render();return r.rows}
+  finally{S.busy=false}
+}
+
+/* ---------- photos ---------- */
+const thumbUrl=(id,w)=>`https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w${w||400}`;
+const photoCache={};
+async function photoFallback(img){
+  const id=img.dataset.pid;if(!id||img.dataset.fb) return;img.dataset.fb="1";
+  try{const d=photoCache[id]||(photoCache[id]=await call("apiPhotoData",S.code,id));if(d) img.src=d}catch(e){}
+}
+document.addEventListener("error",e=>{const t=e.target;if(t.tagName==="IMG"&&t.dataset.pid) photoFallback(t)},true);
+const imgTag=(id,w,cls)=>`<img class="${cls||""}" src="${thumbUrl(id,w)}" data-pid="${esc(id)}" alt="Photo" loading="lazy" referrerpolicy="no-referrer">`;
+async function shrink(file,max){
+  max=max||1600;let src,url;
+  try{src=await createImageBitmap(file)}catch(e){url=URL.createObjectURL(file);src=await new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>rej(new Error("This photo's format can't be read. Please use a JPG or PNG."));im.src=url})}
+  const w=src.width||src.naturalWidth,h=src.height||src.naturalHeight,sc=Math.min(1,max/Math.max(w,h));
+  const c=document.createElement("canvas");c.width=Math.round(w*sc);c.height=Math.round(h*sc);
+  const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(src,0,0,c.width,c.height);if(url) URL.revokeObjectURL(url);
+  return c.toDataURL("image/jpeg",0.82);
+}
+async function uploadPhotos(files,onEach){
+  const ids=[];
+  for(const f of files){const d=await shrink(f);const id=await call("apiUploadPhoto",S.code,d);photoCache[id]=d;ids.push(id);onEach&&onEach(id,d)}
+  return ids;
+}
+function lightbox(id){const d=document.createElement("div");d.className="lightbox";d.innerHTML=`<img src="${photoCache[id]||thumbUrl(id,1600)}" data-pid="${esc(id)}" alt="Photo">`;d.onclick=()=>d.remove();document.body.appendChild(d)}
+
+/* ---------- views ---------- */
+function filtered(){
+  const f=S.f,q=f.q.toLowerCase();
+  return S.rows.filter(r=>(!f.status||r.status===f.status)&&(!f.prop||r.property===f.prop)&&(!f.method||r.method===f.method)&&(!f.month||String(r.requested).slice(0,7)===f.month)&&
+    (!q||[r.id,r.property,r.location,r.item,r.description,r.reason,r.method,r.vendor,r.remarks,r.status,r.requestedBy].join(" ").toLowerCase().includes(q)))
+   .sort((a,b)=>String(b.requested).localeCompare(String(a.requested))||String(b.id).localeCompare(String(a.id),undefined,{numeric:true}));
+}
+function render(){
+  document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===S.tab));
+  if(S.tab==="summary") return renderSummary();
+  renderLog();
+}
+function renderLog(){
+  const rows=filtered(),f=S.f;
+  const counts={};S.rows.forEach(r=>counts[r.status]=(counts[r.status]||0)+1);
+  const qty=rows.reduce((t,r)=>t+(+r.qty||0),0),cost=rows.reduce((t,r)=>t+(+r.cost||0),0);
+  const filtersOn=f.status||f.prop||f.method||f.month||f.q;
+  $("#view").innerHTML=`<div class="pagehead"><div><h2>Disposal log</h2><div class="sub"><span class="num">${rows.length}</span> line${rows.length===1?"":"s"} · <span class="num">${qty.toLocaleString()}</span> item${qty===1?"":"s"}${cost?" · "+money(cost):""}${filtersOn?` · <button class="btn ghost sm" id="clr" style="padding:0 4px;color:var(--accent)">Clear filters</button>`:""}</div></div>
+    <div class="actions"><button class="btn" id="xls">Download Excel</button>${S.sheetUrl?`<a class="btn" href="${esc(S.sheetUrl)}" target="_blank" rel="noopener">Open Google Sheet</a>`:""}</div></div>
+    <div class="chips" role="group" aria-label="Filter by status"><button class="chip" data-st="" aria-pressed="${!f.status}">All<span class="n">${S.rows.length}</span></button>${STATUSES.map(s=>`<button class="chip ${stCls(s)}" data-st="${esc(s)}" aria-pressed="${f.status===s}"><span class="dot"></span>${esc(s)}<span class="n">${counts[s]||0}</span></button>`).join("")}</div>
+    <div class="toolbar"><select id="fProp" aria-label="Property"><option value="">All properties</option>${list("Property").map(p=>`<option ${f.prop===p?"selected":""}>${esc(p)}</option>`).join("")}</select>
+      <select id="fMethod" aria-label="Method"><option value="">All methods</option>${list("Method").map(p=>`<option ${f.method===p?"selected":""}>${esc(p)}</option>`).join("")}</select>
+      <select id="fMonth" aria-label="Month requested"><option value="">Any month</option>${[...new Set(S.rows.map(r=>String(r.requested).slice(0,7)).filter(x=>/^\d{4}-\d{2}$/.test(x)))].sort().reverse().map(m=>`<option value="${m}" ${f.month===m?"selected":""}>${new Date(m+"-01T00:00:00").toLocaleDateString("en-SG",{month:"long",year:"numeric"})}</option>`).join("")}</select></div>
+    ${rows.length?`<div class="ledger-wrap"><table class="ledger"><thead><tr><th>Photo</th><th>Item</th><th>Where</th><th>Method</th><th>Dates</th><th>Requested</th><th class="r">Cost</th><th>Status</th></tr></thead><tbody>
+      ${rows.map(r=>{const ph=r.photos||[];return `<tr data-id="${esc(r.id)}">
+        <td class="c-ph"><div class="thumbs">${ph.length?imgTag(ph[0],160,"thumb")+(ph.length>1?`<span class="more">+${ph.length-1}</span>`:""):`<span class="noph">No photo</span>`}</div></td>
+        <td class="c-what"><b>${esc(r.item||"Item")}</b> <span class="mono">× ${+r.qty||0}</span>${r.description?`<div class="small">${esc(r.description)}</div>`:""}${r.reason?`<div class="small">${esc(r.reason)}</div>`:""}</td>
+        <td class="c-where">${esc(r.property)}${r.location?` · ${esc(r.location)}`:""}</td>
+        <td class="c-how">${esc(r.method||"")}${r.vendor?`<div class="small">${esc(r.vendor)}</div>`:""}${r.remarks?`<div class="small">${esc(r.remarks)}</div>`:""}</td>
+        <td class="c-dates dates">${r.completed?`Done ${fmtShort(r.completed)}`:r.planned?`Planned ${fmtShort(r.planned)}`:`<span class="muted">Not scheduled</span>`}</td>
+        <td class="c-req dates">${fmtShort(r.requested)}<div class="small">${esc(r.id)}${r.requestedBy?" · "+esc(r.requestedBy):""}</div></td>
+        <td class="c-cost r num">${r.cost!==""&&r.cost!=null?money(r.cost):""}</td>
+        <td class="c-st"><span class="pill ${stCls(r.status)}"><span class="dot"></span>${esc(r.status||"Pending approval")}</span></td></tr>`}).join("")}
+    </tbody></table></div>`:`<div class="empty"><h3>${S.rows.length?"No disposals match":"No disposals yet"}</h3><p>${S.rows.length?"Try clearing the search or filters.":"Log furniture or equipment to be disposed, recycled, sold, donated or sent to storage. Add one line per item type per location, with photos."}</p>${S.rows.length?"":`<button class="btn primary" onclick="openForm()">+ New disposal</button>`}</div>`}`;
+  document.querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{S.f.status=b.dataset.st;render()});
+  $("#fProp").onchange=e=>{S.f.prop=e.target.value;render()};$("#fMethod").onchange=e=>{S.f.method=e.target.value;render()};$("#fMonth").onchange=e=>{S.f.month=e.target.value;render()};
+  $("#clr")&&($("#clr").onclick=()=>{S.f={q:"",status:"",prop:"",method:"",month:""};$("#q").value="";render()});
+  $("#xls").onclick=exportExcel;
+  $("#view tbody")?.addEventListener("click",e=>{const tr=e.target.closest("tr[data-id]");if(tr) openForm(S.rows.find(r=>r.id===tr.dataset.id))});
+}
+function agg(key,rows){const m={};rows.forEach(r=>{const k=r[key]||"(blank)";const a=m[k]=m[k]||{n:0,qty:0,cost:0,tables:0,chairs:0};a.n++;a.qty+=+r.qty||0;a.cost+=+r.cost||0;if(r.item==="Table") a.tables+=+r.qty||0;if(r.item==="Chair") a.chairs+=+r.qty||0});return m}
+function renderSummary(){
+  const all=S.rows,live=all.filter(r=>r.status!=="Cancelled");
+  const bySt=agg("status",all),byM=agg("method",live),byP=agg("property",live),byI=agg("item",live);
+  const month=today().slice(0,7),doneMonth=all.filter(r=>r.status==="Completed"&&String(r.completed).slice(0,7)===month).reduce((t,r)=>t+(+r.qty||0),0);
+  const open=all.filter(r=>r.status==="Scheduled"&&r.planned&&r.planned<today());
+  const totalCost=live.reduce((t,r)=>t+(+r.cost||0),0);
+  const tbl=(title,m,keys,filterKey,showTC)=>{const ks=keys.filter(k=>m[k]).concat(Object.keys(m).filter(k=>!keys.includes(k)));const max=Math.max(1,...ks.map(k=>m[k].qty));
+    const tot=ks.reduce((t,k)=>({n:t.n+m[k].n,qty:t.qty+m[k].qty,cost:t.cost+m[k].cost,tables:t.tables+m[k].tables,chairs:t.chairs+m[k].chairs}),{n:0,qty:0,cost:0,tables:0,chairs:0});
+    return `<section class="panel"><div class="ph"><h3>${title}</h3><span class="muted" style="font-size:13px">${filterKey==="status"?"all lines":"excludes cancelled"}</span></div>
+      ${ks.length?`<table class="sum"><thead><tr><th>${title.replace("By ","")}</th><th>Lines</th>${showTC?"<th>Tables</th><th>Chairs</th>":""}<th>All items</th><th>Cost</th></tr></thead><tbody>
+      ${ks.map(k=>`<tr data-f="${filterKey}" data-v="${esc(k)}"><td>${filterKey==="status"?`<span class="pill ${stCls(k)}"><span class="dot"></span>${esc(k)}</span>`:esc(k)}<div class="bar"><i style="width:${m[k].qty/max*100}%"></i></div></td><td>${m[k].n}</td>${showTC?`<td>${m[k].tables}</td><td>${m[k].chairs}</td>`:""}<td>${m[k].qty}</td><td>${m[k].cost?money(m[k].cost):"–"}</td></tr>`).join("")}
+      <tr class="tot"><td>Total</td><td>${tot.n}</td>${showTC?`<td>${tot.tables}</td><td>${tot.chairs}</td>`:""}<td>${tot.qty}</td><td>${tot.cost?money(tot.cost):"–"}</td></tr></tbody></table>`:`<p class="muted" style="padding:0 14px 14px;margin:0">Nothing yet.</p>`}</section>`};
+  $("#view").innerHTML=`<div class="pagehead"><div><h2>Summary</h2><div class="sub">Updates live from the log. Click a row to see those lines.</div></div><div class="actions"><button class="btn" id="xls">Download Excel</button></div></div>
+    <div class="kpis">
+      <button class="kpi" data-k="Pending approval"><span class="k">Pending approval</span><span class="v" style="${bySt["Pending approval"]?"color:var(--warn)":""}">${bySt["Pending approval"]?.n||0}</span><span class="s">${(n=>n+" item"+(n===1?"":"s")+" waiting")(bySt["Pending approval"]?.qty||0)}</span></button>
+      <button class="kpi" data-k="Scheduled"><span class="k">Scheduled</span><span class="v">${bySt["Scheduled"]?.n||0}</span><span class="s">${open.length?`<span style="color:var(--bad)">${open.length} past planned date</span>`:`${(n=>n+" item"+(n===1?"":"s"))(bySt["Scheduled"]?.qty||0)}`}</span></button>
+      <button class="kpi" data-k="Completed"><span class="k">Completed this month</span><span class="v">${doneMonth}</span><span class="s">item${doneMonth===1?"":"s"} · ${bySt["Completed"]?.qty||0} all time</span></button>
+      <button class="kpi" data-k=""><span class="k">Total cost</span><span class="v" style="font-size:24px;padding:4px 0">${money(totalCost)}</span><span class="s">excludes cancelled</span></button>
+    </div>
+    <div class="sgrid">${tbl("By status",bySt,STATUSES,"status",false)}${tbl("By method",byM,list("Method"),"method",true)}${tbl("By property",byP,list("Property"),"prop",true)}${tbl("By item",byI,list("Item"),"item",false)}</div>`;
+  $("#xls").onclick=exportExcel;
+  document.querySelectorAll(".kpi").forEach(b=>b.onclick=()=>{S.f={q:"",status:b.dataset.k,prop:"",method:"",month:""};$("#q").value="";S.tab="log";render()});
+  document.querySelectorAll("tr[data-f]").forEach(tr=>tr.onclick=()=>{const k=tr.dataset.f,v=tr.dataset.v;S.f={q:"",status:"",prop:"",method:"",month:""};
+    if(k==="item"){S.f.q=v;$("#q").value=v}else{S.f[k]=v;$("#q").value=""}S.tab="log";render()});
+}
+
+/* ---------- add / edit ---------- */
+function opts(k,v,blank){const l=list(k);if(v&&!l.includes(v)) l.push(v);return (blank?`<option value="">${blank}</option>`:"")+l.map(x=>`<option ${x===v?"selected":""}>${esc(x)}</option>`).join("")}
+function dl(id,k){return `<datalist id="${id}">${list(k).map(x=>`<option value="${esc(x)}">`).join("")}</datalist>`}
+function openForm(rec){
+  const isNew=!rec;const r=rec?JSON.parse(JSON.stringify(rec)):{requested:today(),property:S.f.prop||"",location:"",reason:"",condition:"",method:"Dispose",vendor:"",planned:"",completed:"",cost:"",status:"Pending approval",remarks:""};
+  const items=isNew?[{item:"",description:"",qty:1,photos:[]}]:[{item:r.item,description:r.description,qty:r.qty,photos:[...(r.photos||[])]}];
+  let dirty=false,uploading=0;
+  const locs=()=>[...new Set(S.rows.filter(x=>!$("#d-prop")||x.property===$("#d-prop").value).map(x=>x.location).filter(Boolean))];
+  $("#overlay").innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt">
+    <div class="mhead"><div><span class="eyebrow">${isNew?"New disposal":esc(r.id)}</span><h3 id="mt">${isNew?"Log items to dispose":esc(r.item||"Disposal")+" × "+(+r.qty||0)}</h3>${isNew?"":`<div class="meta">Requested ${fmtD(r.requested)}${r.requestedBy?" by "+esc(r.requestedBy):""}${r.updatedBy?` · last updated by ${esc(r.updatedBy)}`:""}</div>`}</div><button class="btn ghost" data-x aria-label="Close">✕</button></div>
+    ${isNew?"":`<div class="flow"><span class="lbl">Status</span><span class="pill ${stCls(r.status)}" id="curSt"><span class="dot"></span>${esc(r.status)}</span><span style="flex:1"></span>
+      ${r.status==="Pending approval"?`<button class="btn sm" data-go="Approved">Approve</button>`:""}
+      ${["Pending approval","Approved"].includes(r.status)?`<button class="btn sm" data-go="Scheduled">Mark scheduled</button>`:""}
+      ${!["Completed","Cancelled"].includes(r.status)?`<button class="btn sm primary" data-go="Completed">Mark completed</button><button class="btn sm ghost danger" data-go="Cancelled">Cancel</button>`:`<button class="btn sm" data-go="Pending approval">Reopen</button>`}</div>`}
+    <form id="df" class="grid" novalidate>
+      <div class="field"><label for="d-prop">Property <span class="req">*</span></label><input id="d-prop" list="dlP" value="${esc(r.property)}" required autocomplete="off">${dl("dlP","Property")}</div>
+      <div class="field"><label for="d-loc">Unit / location <span class="req">*</span></label><input id="d-loc" list="dlL" value="${esc(r.location)}" placeholder="e.g. WS 11, Level 2 pantry" required autocomplete="off"><datalist id="dlL"></datalist></div>
+      <div class="field"><label for="d-req">Date requested</label><input id="d-req" type="date" value="${esc(r.requested)}"></div>
+      <div class="field full"><span class="flabel">${isNew?"Items <span class=\"hint\">(one line per item type, e.g. tables and chairs separately)</span>":"Item"}</span><div class="items" id="items"></div>${isNew?`<div><button class="btn sm" type="button" id="addItem">+ Add another item</button></div>`:""}</div>
+      <div class="field"><label for="d-reason">Reason</label><input id="d-reason" value="${esc(r.reason)}" placeholder="e.g. Replaced with new furniture"></div>
+      <div class="field"><label for="d-cond">Condition</label><select id="d-cond">${opts("Condition",r.condition,"Not set")}</select></div>
+      <div class="field"><label for="d-method">Method</label><select id="d-method">${opts("Method",r.method)}</select></div>
+      <div class="field"><label for="d-vendor">Vendor / contractor</label><input id="d-vendor" list="dlV" value="${esc(r.vendor)}" autocomplete="off">${dl("dlV","Vendor / Contractor")}</div>
+      <div class="field"><label for="d-plan">Planned date</label><input id="d-plan" type="date" value="${esc(r.planned)}"></div>
+      <div class="field"><label for="d-done">Completed date</label><input id="d-done" type="date" value="${esc(r.completed)}"></div>
+      <div class="field"><label for="d-cost">Cost (SGD)</label><input id="d-cost" inputmode="decimal" value="${esc(r.cost)}" placeholder="Optional"></div>
+      <div class="field"><label for="d-st">Status</label><select id="d-st">${opts("Status",r.status)}</select></div>
+      <div class="field full"><label for="d-rem">Remarks</label><textarea id="d-rem" rows="2" placeholder="e.g. To 219 Kallang Bahru storage">${esc(r.remarks)}</textarea></div>
+      <div class="row-end full">${isNew?"":`<button class="btn ghost danger" type="button" id="del" style="margin-right:auto">Delete</button>`}<button class="btn" type="button" data-x>Cancel</button><button class="btn primary" type="submit" id="saveB">${isNew?"Log disposal":"Save changes"}</button></div>
+    </form></div>`;
+  const fillLocs=()=>{$("#dlL").innerHTML=locs().map(x=>`<option value="${esc(x)}">`).join("")};fillLocs();$("#d-prop").addEventListener("input",fillLocs);
+  const drawItems=()=>{$("#items").innerHTML=items.map((it,i)=>`<div class="itemrow" data-i="${i}">
+      <div class="irow"><div class="field"><label for="it-${i}">Item <span class="req">*</span></label><input id="it-${i}" data-k="item" list="dlI" value="${esc(it.item)}" autocomplete="off" required></div>
+      <div class="field"><label for="ds-${i}">Description</label><input id="ds-${i}" data-k="description" value="${esc(it.description)}" placeholder="e.g. Old office table"></div>
+      <div class="field"><label for="qt-${i}">Qty <span class="req">*</span></label><input id="qt-${i}" data-k="qty" type="number" min="1" inputmode="numeric" value="${esc(it.qty)}"></div>
+      ${items.length>1?`<button class="btn ghost sm" type="button" data-rm="${i}" aria-label="Remove this item">Remove</button>`:"<span></span>"}</div>
+      <div class="phedit">${it.photos.map((p,j)=>`<figure>${imgTag(p,200)}<button type="button" data-rp="${i}:${j}" aria-label="Remove photo">✕</button></figure>`).join("")}
+        <label class="btn sm">+ Photo<input type="file" accept="image/*" multiple hidden data-ph="${i}"></label><label class="btn sm">Take photo<input type="file" accept="image/*" capture="environment" hidden data-ph="${i}"></label>
+        <span class="hint" id="up-${i}"></span></div></div>`).join("")+dl("dlI","Item")};
+  drawItems();
+  const form=$("#df");
+  form.addEventListener("input",()=>dirty=true);
+  $("#items").addEventListener("input",e=>{const el=e.target.closest("[data-k]");if(!el) return;const i=+el.closest(".itemrow").dataset.i;items[i][el.dataset.k]=el.dataset.k==="qty"?el.value:el.value});
+  $("#items").addEventListener("click",e=>{
+    const rm=e.target.closest("[data-rm]");if(rm){items.splice(+rm.dataset.rm,1);dirty=true;drawItems();return}
+    const rp=e.target.closest("[data-rp]");if(rp){const [i,j]=rp.dataset.rp.split(":").map(Number);items[i].photos.splice(j,1);dirty=true;drawItems();return}
+    const im=e.target.closest("img[data-pid]");if(im) lightbox(im.dataset.pid)});
+  $("#items").addEventListener("change",async e=>{const inp=e.target.closest("input[data-ph]");if(!inp) return;const i=+inp.dataset.ph,files=[...inp.files];inp.value="";if(!files.length) return;
+    uploading++;dirty=true;const st=$("#up-"+i);let n=0;st.textContent=`Uploading ${files.length} photo${files.length===1?"":"s"}…`;
+    try{await uploadPhotos(files,id=>{items[i].photos.push(id);n++;st.textContent=`Uploaded ${n} of ${files.length}…`});drawItems()}
+    catch(err){st.textContent="";toast(err.message,6000);drawItems()}finally{uploading--}});
+  $("#addItem")&&($("#addItem").onclick=()=>{items.push({item:"",description:"",qty:1,photos:[]});drawItems();setTimeout(()=>$("#it-"+(items.length-1)).focus(),20)});
+  const close=()=>{$("#overlay").innerHTML="";document.removeEventListener("keydown",onKey);render()};
+  const tryClose=()=>{if(!dirty||confirmLeave()) close()};
+  const confirmLeave=()=>window.confirm?window.confirm("Discard your changes?"):true;
+  const onKey=e=>{if(e.key==="Escape"&&!document.querySelector(".lightbox")) tryClose()};document.addEventListener("keydown",onKey);
+  document.querySelectorAll("#overlay [data-x]").forEach(b=>b.onclick=tryClose);
+  $("#overlay").onclick=e=>{if(e.target.id==="overlay") tryClose()};
+  // status shortcuts
+  document.querySelectorAll("#overlay [data-go]").forEach(b=>b.onclick=()=>{const s=b.dataset.go;$("#d-st").value=s;
+    if(s==="Completed"&&!$("#d-done").value) $("#d-done").value=today();
+    if(s==="Scheduled"&&!$("#d-plan").value){$("#d-plan").focus();toast("Pick the planned date, then save")}
+    else form.requestSubmit()});
+  $("#d-st").onchange=e=>{if(e.target.value==="Completed"&&!$("#d-done").value) $("#d-done").value=today()};
+  if(!isNew) $("#del").onclick=async()=>{if(!window.confirm(`Delete ${r.id} (${r.item} × ${r.qty})? This can't be undone.`)) return;
+    S.busy=true;try{await call("apiDelete",S.code,r.id);S.rows=S.rows.filter(x=>x.id!==r.id);toast("Deleted "+r.id);close()}catch(err){toast(err.message,6000)}finally{S.busy=false}};
+  form.onsubmit=async e=>{e.preventDefault();
+    if(uploading){toast("Wait for the photos to finish uploading");return}
+    const g=id=>$("#"+id).value.trim();
+    const bad=[];if(!g("d-prop")) bad.push("d-prop");if(!g("d-loc")) bad.push("d-loc");
+    items.forEach((it,i)=>{if(!String(it.item).trim()) bad.push("it-"+i);if(!(+it.qty>0)) bad.push("qt-"+i)});
+    if(bad.length){const el=$("#"+bad[0]);el.focus();el.setAttribute("aria-invalid","true");toast(bad[0].startsWith("qt")?"Enter a quantity of at least 1":"Fill in the required fields marked *");return}
+    const cost=g("d-cost")===""?"":parseFloat(g("d-cost").replace(/[^0-9.\-]/g,""));
+    if(cost!==""&&isNaN(cost)){$("#d-cost").focus();toast("Cost must be a number");return}
+    const base={requested:g("d-req")||today(),property:g("d-prop"),location:g("d-loc"),reason:g("d-reason"),condition:g("d-cond"),method:g("d-method"),vendor:g("d-vendor"),
+      planned:g("d-plan"),completed:g("d-done"),cost,status:g("d-st")||"Pending approval",remarks:g("d-rem")};
+    if(base.status==="Completed"&&!base.completed) base.completed=today();
+    const recs=items.map(it=>({...base,id:isNew?undefined:r.id,requestedBy:isNew?S.name:r.requestedBy,item:String(it.item).trim(),description:String(it.description||"").trim(),qty:Math.round(+it.qty),photos:it.photos}));
+    const b=$("#saveB");b.disabled=true;
+    try{const out=await save(recs,isNew?`Logged ${recs.length} line${recs.length===1?"":"s"}: ${recs.map(x=>x.item+" × "+x.qty).join(", ")}`:`Saved ${r.id}`);
+      $("#overlay").innerHTML="";document.removeEventListener("keydown",onKey);if(isNew){S.f.status="";}render()}
+    catch(err){b.disabled=false;toast(err.message,6000)}};
+  setTimeout(()=>(isNew?$("#d-prop"):$("#d-st")).focus(),40);
+}
+window.openForm=openForm;
+
+/* ---------- Excel ---------- */
+let xlP=null;
+function loadXL(){if(window.ExcelJS) return Promise.resolve();if(!xlP) xlP=new Promise((res,rej)=>{const s=document.createElement("script");s.src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js";s.onload=res;s.onerror=()=>{xlP=null;rej(new Error("The Excel builder didn't load. Check your connection."))};document.head.appendChild(s)});return xlP}
+async function exportExcel(){
+  try{toast("Preparing Excel…",30000);await loadXL();
+    const wb=new ExcelJS.Workbook(),ws=wb.addWorksheet("Disposal Log",{views:[{state:"frozen",ySplit:1}]});
+    const cols=[["ID","id",10],["Date Requested","requested",14],["Property","property",14],["Unit / Location","location",26],["Item","item",14],["Description","description",24],["Qty","qty",7],["Condition","condition",14],["Reason","reason",30],["Method","method",16],["Vendor / Contractor","vendor",18],["Planned Date","planned",14],["Completed Date","completed",14],["Cost (SGD)","cost",12],["Status","status",16],["Photos","photos",40],["Remarks","remarks",30],["Requested By","requestedBy",16]];
+    ws.columns=cols.map(([h,k,w])=>({header:h,key:k,width:w}));
+    const rows=filtered().slice().reverse();
+    rows.forEach(r=>{const o={};cols.forEach(([h,k])=>{let v=r[k];if(k==="photos") v=(v||[]).map(id=>"https://drive.google.com/file/d/"+id+"/view").join("\n");
+      else if(["requested","planned","completed"].includes(k)&&v){const t=Date.parse(v+"T00:00:00");v=isNaN(t)?v:new Date(Date.UTC(+v.slice(0,4),+v.slice(5,7)-1,+v.slice(8,10)))}o[k]=v===undefined?"":v});ws.addRow(o)});
+    ws.getRow(1).font={bold:true,color:{argb:"FFFFFFFF"}};ws.getRow(1).fill={type:"pattern",pattern:"solid",fgColor:{argb:"FF1B2127"}};
+    ["requested","planned","completed"].forEach(k=>ws.getColumn(k).numFmt="d mmm yyyy");ws.getColumn("cost").numFmt="#,##0.00";
+    ws.getColumn("photos").alignment={wrapText:true,vertical:"top"};ws.autoFilter={from:"A1",to:{row:1,column:cols.length}};
+    const sm=wb.addWorksheet("Summary");const live=rows.filter(r=>r.status!=="Cancelled");
+    const sec=(title,m,keys,tc)=>{sm.addRow([title]).font={bold:true,size:13};const h=sm.addRow(["",...(tc?["Tables","Chairs"]:[]),"Lines","All items","Cost (SGD)"]);h.font={bold:true};
+      const ks=keys.filter(k=>m[k]).concat(Object.keys(m).filter(k=>!keys.includes(k)));ks.forEach(k=>sm.addRow([k,...(tc?[m[k].tables,m[k].chairs]:[]),m[k].n,m[k].qty,m[k].cost]));sm.addRow([])};
+    sec("By status",agg("status",rows),STATUSES,false);sec("By method (excl. cancelled)",agg("method",live),list("Method"),true);sec("By property (excl. cancelled)",agg("property",live),list("Property"),true);
+    sm.getColumn(1).width=30;[2,3,4,5,6].forEach(i=>sm.getColumn(i).width=12);
+    const buf=await wb.xlsx.writeBuffer();const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));
+    a.download=`TWC Disposals ${today()}.xlsx`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000);toast(`Downloaded ${rows.length} line${rows.length===1?"":"s"}`)}
+  catch(e){toast(e.message||"Couldn't build the Excel file",6000)}
+}
+
+/* ---------- wiring ---------- */
+$("#q").addEventListener("input",e=>{S.f.q=e.target.value;if(S.tab!=="log"){S.tab="log"}render()});
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;render()});
+$("#newBtn").onclick=()=>openForm();$("#fab").onclick=()=>openForm();
+boot();
+</script>
+<script>
+/* New-version notice: compares this page's code with the copy on the server and offers a refresh when they differ. */
+(()=>{
+  const fp=d=>[...d.querySelectorAll("script:not([src]),style")].map(e=>e.textContent.replace(/\r/g,"")).join("\u0001");
+  const mine=fp(document);let shown=false,dismissed=0,last=0,busy=false;
+  async function check(force){
+    if(shown||busy||(!force&&Date.now()-last<60000)) return;busy=true;last=Date.now();
+    try{const u=new URL(location.pathname,location.origin);u.searchParams.set("v",Date.now());
+      const r=await fetch(u,{cache:"no-store"});if(!r.ok) return;const t=await r.text();
+      const d=new DOMParser().parseFromString(t,"text/html");if(!d.querySelector("script:not([src])")) return;
+      if(fp(d)!==mine&&Date.now()-dismissed>30*60000) show();
+    }catch(e){}finally{busy=false}
+  }
+  function show(){
+    shown=true;let b=document.getElementById("updBar");
+    if(!b){b=document.createElement("div");b.id="updBar";b.className="upd";b.setAttribute("role","status");
+      b.innerHTML='<span><b>New version available.</b> Refresh to update.</span><button class="btn" type="button">Refresh</button><button class="x" type="button" aria-label="Later" title="Later">×</button>';
+      b.querySelector(".btn").onclick=()=>location.reload();
+      b.querySelector(".x").onclick=()=>{b.hidden=true;shown=false;dismissed=Date.now()};
+      document.body.appendChild(b)}
+    b.hidden=false;
+  }
+  setTimeout(()=>check(true),15000);
+  setInterval(()=>{if(!document.hidden) check()},5*60000);
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden) check()});
+})();
+</script>
+</body>
+</html>
